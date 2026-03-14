@@ -6,16 +6,21 @@ import (
 )
 
 func (app *application) internalServerError(w http.ResponseWriter, r *http.Request, err error) {
-	log.Print("internal server error : ", r.Method, " path : ", r.URL.Path, "error : ", err.Error())
+	log.Printf("msg=%q method=%s path=%s error=%q", "internal server error", r.Method, r.URL.Path, err.Error())
 	writeJSONError(w, http.StatusInternalServerError, "the server encountered a problem")
 }
 
 func (app *application) badRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
-	log.Print("bad request error : ", r.Method, " path : ", r.URL.Path, "error : ", err.Error())
+	log.Printf("msg=%q method=%s path=%s error=%q", "bad request error", r.Method, r.URL.Path, err.Error())
 	writeJSONError(w, http.StatusBadRequest, err.Error())
 }
 
 func (app *application) notFoundResponse(w http.ResponseWriter, r *http.Request, err error) {
-	log.Print("bad request error : ", r.Method, " path : ", r.URL.Path, "error : ", err.Error())
+	log.Printf("msg=%q method=%s path=%s error=%q", "bad request error", r.Method, r.URL.Path, err.Error())
 	writeJSONError(w, http.StatusNotFound, "Not found")
+}
+
+func (app *application) conflictRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
+	log.Printf("conflict error: method=%s path=%s error=%v", r.Method, r.URL.Path, err)
+	writeJSONError(w, http.StatusConflict, "resource conflict")
 }
