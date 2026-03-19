@@ -58,7 +58,7 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
-	commments, err := app.store.Comments.GetPostById(r.Context(), post.ID)
+	commments, err := app.store.Comments.GetByPostId(r.Context(), post.ID)
 	if err != nil {
 		app.internalServerError(w, r, err)
 		return
