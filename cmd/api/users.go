@@ -32,9 +32,6 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestResponse(w, r, err)
 		return
 	}
-	if err := app.jsonResponse(w, http.StatusOK, nil); err != nil {
-		app.internalServerError(w, r, err)
-	}
 	ctx := r.Context()
 	err := app.store.Followers.Follow(ctx, followerUser.ID, payload.UserID)
 	switch err {
@@ -54,9 +51,7 @@ func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Reque
 		app.badRequestResponse(w, r, err)
 		return
 	}
-	if err := app.jsonResponse(w, http.StatusOK, nil); err != nil {
-		app.internalServerError(w, r, err)
-	}
+
 	ctx := r.Context()
 	app.store.Followers.Unfollow(ctx, unfollowedUser.ID, payload.UserID)
 }
