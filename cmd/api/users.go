@@ -33,13 +33,18 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	ctx := r.Context()
-	err := app.store.Followers.Follow(ctx, followerUser.ID, payload.UserID)
-	switch err {
-	case store.ErrConflict:
-		app.conflictRequestResponse(w, r, err)
-	default:
-		app.internalServerError(w, r, err)
+	if err := app.store.Followers.Follow(ctx, followerUser.ID, payload.UserID); err != nil {
+		switch err {
+		case store.ErrConflict:
+			app.conflictRequestResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
 		return
+	}
+
+	if err := app.jsonResponse(w, http.StatusOK, nil); err != nil {
+		app.internalServerError(w, r, err)
 	}
 }
 
@@ -53,7 +58,14 @@ func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	ctx := r.Context()
-	app.store.Followers.Unfollow(ctx, unfollowedUser.ID, payload.UserID)
+	if err := app.store.Followers.Unfollow(ctx, unfollowedUser.ID, payload.UserID); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+
+	if err := app.jsonResponse(w, http.StatusOK, nil); err != nil {
+		app.internalServerError(w, r, err)
+	}
 }
 
 func (app *application) userContextMiddleware(next http.Handler) http.Handler {
