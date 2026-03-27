@@ -7,7 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/lib/pq v1.11.1
 	github.com/swaggo/http-swagger/v2 v2.0.2
-	github.com/swaggo/swag v1.16.6
+	github.com/swaggo/swag v1.8.12
 )
 
 require (
@@ -24,8 +24,6 @@ require (
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/swaggo/files/v2 v2.0.0 // indirect
 	golang.org/x/crypto v0.46.0 // indirect
-	golang.org/x/mod v0.30.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	golang.org/x/tools v0.39.0 // indirect
