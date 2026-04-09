@@ -5,6 +5,7 @@ import (
 	"first_mod/internal/env"
 	"first_mod/internal/store"
 	"log"
+	"time"
 )
 
 const version = "0.0.1"
@@ -37,7 +38,10 @@ func main() {
 			maxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 		},
-		env:    env.GetString("ENV", "development"),
+		env: env.GetString("ENV", "development"),
+		mail: mailConfig{
+			exp: time.Hour * 24 * 3,
+		},
 		apiURL: env.GetString("EXTERNAL_URL", "localhost:3000"),
 	}
 	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
