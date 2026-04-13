@@ -1,0 +1,33 @@
+{{define "subject"}}Finish Registration with GoConnect{{end}}
+
+{{define "body"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoConnect</title>
+</head>
+<body>
+<p>Hi{{.Username}}</p>
+
+<header>
+    <h1>GoConnect</h1>
+    <p>Scalable backend social media platform</p>
+</header>
+
+<p>Hi{{.Username}}</p>
+
+<p><a href="{{.ActivationURL}}"></a></p>
+<section>
+    <h2>About</h2>
+    <p>GoConnect is designed for high performance and scalability.</p>
+</section>
+
+<footer>
+    <p>Created by Sanjay</p>
+</footer>
+
+</body>
+</html> 
+{{end}}

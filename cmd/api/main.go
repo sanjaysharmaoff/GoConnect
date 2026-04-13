@@ -3,6 +3,7 @@ package main
 import (
 	"first_mod/internal/db"
 	"first_mod/internal/env"
+	"first_mod/internal/mailer"
 	"first_mod/internal/store"
 	"log"
 	"time"
@@ -40,9 +41,14 @@ func main() {
 		},
 		env: env.GetString("ENV", "development"),
 		mail: mailConfig{
-			exp: time.Hour * 24 * 3,
+			exp:       time.Hour * 24 * 3,
+			fromEmail: env.GetString("FROM_EMAIL", ""),
+			sendGrid: sendGridConfig{
+				apiKey: env.GetString("SENDGRID_FROM_EMAIL", ""),
+			},
 		},
-		apiURL: env.GetString("EXTERNAL_URL", "localhost:3000"),
+		apiURL:      env.GetString("EXTERNAL_URL", "localhost:3000"),
+		frontendURL: env.GetString("FRONTEND_URL", "http://localhost:4000"),
 	}
 	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
 	if err != nil {
@@ -51,9 +57,11 @@ func main() {
 	defer db.Close()
 	log.Print("database connection pool established")
 	store := store.NewStorage(db)
+	mailer := mailer.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
 	app := &application{
 		config: cfg,
 		store:  store,
+		mailer: mailer,
 	}
 	mux := app.mount()
 	log.Fatal(app.run(mux))

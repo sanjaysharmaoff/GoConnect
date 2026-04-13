@@ -2,6 +2,7 @@ package main
 
 import (
 	"first_mod/docs"
+	"first_mod/internal/mailer"
 	"first_mod/internal/store"
 	"fmt"
 	"net/http"
@@ -13,15 +14,22 @@ import (
 )
 
 type config struct {
-	addr   string
-	db     dbConfig
-	env    string
-	apiURL string
-	mail   mailConfig
+	addr        string
+	db          dbConfig
+	env         string
+	apiURL      string
+	mail        mailConfig
+	frontendURL string
 }
 
 type mailConfig struct {
-	exp time.Duration
+	exp       time.Duration
+	fromEmail string
+	sendGrid  sendGridConfig
+}
+
+type sendGridConfig struct {
+	apiKey string
 }
 
 type dbConfig struct {
@@ -34,6 +42,7 @@ type dbConfig struct {
 type application struct {
 	config config
 	store  store.Storage
+	mailer mailer.Client
 }
 
 func (app *application) mount() http.Handler {
