@@ -49,6 +49,12 @@ func main() {
 		},
 		apiURL:      env.GetString("EXTERNAL_URL", "localhost:3000"),
 		frontendURL: env.GetString("FRONTEND_URL", "http://localhost:4000"),
+		auth: authConfig{
+			basic: basicConfig{
+				user: env.GetString("AUTH_BASIC_USER", "admin"),
+				pass: env.GetString("AUTH_BASIC_PASS", "admin"),
+			},
+		},
 	}
 	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
 	if err != nil {

@@ -24,3 +24,14 @@ func (app *application) conflictRequestResponse(w http.ResponseWriter, r *http.R
 	log.Printf("conflict error: method=%s path=%s error=%v", r.Method, r.URL.Path, err)
 	writeJSONError(w, http.StatusConflict, "resource conflict")
 }
+
+func (app *application) unauthorizedErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	log.Printf("unauthorized  error: method=%s path=%s error=%v", r.Method, r.URL.Path, err)
+	writeJSONError(w, http.StatusUnauthorized, "unauthorized")
+}
+
+func (app *application) unauthorizedBasicErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	w.Header().Set("WWW-Authenticate", `Basic realm="restricted",charset="UTF-8"`)
+	log.Printf("basic unauthorized error: method=%s path=%s error=%v", r.Method, r.URL.Path, err)
+	writeJSONError(w, http.StatusUnauthorized, "basic unauthorized")
+}
