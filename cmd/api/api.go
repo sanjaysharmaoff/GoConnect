@@ -2,6 +2,7 @@ package main
 
 import (
 	"first_mod/docs"
+	"first_mod/internal/auth"
 	"first_mod/internal/env"
 	"first_mod/internal/mailer"
 	"first_mod/internal/store"
@@ -27,8 +28,14 @@ type config struct {
 
 type authConfig struct {
 	basic basicConfig
+	token tokenConfig
 }
 
+type tokenConfig struct {
+	secret string
+	exp    time.Duration
+	iss    string
+}
 type basicConfig struct {
 	user string
 	pass string
@@ -52,9 +59,10 @@ type dbConfig struct {
 }
 
 type application struct {
-	config config
-	store  store.Storage
-	mailer mailer.Client
+	config        config
+	store         store.Storage
+	mailer        mailer.Client
+	authenticator auth.Authenticator
 }
 
 func (app *application) mount() http.Handler {
@@ -100,6 +108,7 @@ func (app *application) mount() http.Handler {
 
 		r.Route("/authentication", func(r chi.Router) {
 			r.Post("/user", app.registerUserHandler)
+			r.Post("/token", app.createTokenHandler)
 		})
 
 	})

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"first_mod/internal/auth"
 	"first_mod/internal/db"
 	"first_mod/internal/env"
 	"first_mod/internal/mailer"
@@ -54,6 +55,11 @@ func main() {
 				user: env.GetString("AUTH_BASIC_USER", "admin"),
 				pass: env.GetString("AUTH_BASIC_PASS", "admin"),
 			},
+			token: tokenConfig{
+				secret: env.GetString("AUTH_TOKEN_SECRET", "abcxyz"),
+				exp:    time.Hour * 24 * 3,
+				iss:    "goconnect",
+			},
 		},
 	}
 	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
@@ -64,10 +70,13 @@ func main() {
 	log.Print("database connection pool established")
 	store := store.NewStorage(db)
 	mailer := mailer.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
+
+	jwtAuthenticator := auth.NewJWTAuthenticator(cfg.auth.token.secret, cfg.auth.token.iss, cfg.auth.token.iss)
 	app := &application{
-		config: cfg,
-		store:  store,
-		mailer: mailer,
+		config:        cfg,
+		store:         store,
+		mailer:        mailer,
+		authenticator: jwtAuthenticator,
 	}
 	mux := app.mount()
 	log.Fatal(app.run(mux))
